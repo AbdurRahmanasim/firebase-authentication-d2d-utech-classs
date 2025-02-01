@@ -1,3 +1,4 @@
+import 'package:authtesting/home.dart';
 import 'package:authtesting/signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Signup(),
+      home: HomeScreen(),
     );
   }
 }

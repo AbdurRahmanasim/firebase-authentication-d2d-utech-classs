@@ -25,6 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
         .catchError((error) => print("Failed to add Item: $error"));
   }
 
+  final Stream<QuerySnapshot> _itemsStream =
+      FirebaseFirestore.instance.collection('items').snapshots();
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -79,6 +82,40 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.white),
                     ))),
             SizedBox(height: 10),
+            StreamBuilder<QuerySnapshot>(
+              stream: _itemsStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text("Loading");
+                }
+
+                return ListView(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                        
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(
+                        data['itemName'],
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        data['price'].toString(),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            )
           ],
         ),
       ),
