@@ -13,6 +13,9 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _itemController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
 
+  TextEditingController _newitemController = TextEditingController();
+  TextEditingController _newpriceController = TextEditingController();
+
   addItem() {
     CollectionReference items = FirebaseFirestore.instance.collection('items');
 
@@ -20,13 +23,38 @@ class _HomeScreenState extends State<HomeScreen> {
         .add({
           'itemName': _itemController.text.trim(),
           'price': int.parse(_priceController.text.trim()),
+          'date': DateTime.now()
         })
         .then((value) => print("Item Added"))
         .catchError((error) => print("Failed to add Item: $error"));
   }
 
-  final Stream<QuerySnapshot> _itemsStream =
-      FirebaseFirestore.instance.collection('items').snapshots();
+  updateItem(docID) {
+    CollectionReference items = FirebaseFirestore.instance.collection('items');
+
+    items
+        .doc(docID)
+        .update({
+          'itemName': _newitemController.text.trim(),
+          'price': int.parse(_newpriceController.text.trim()),
+          'date': DateTime.now()
+        })
+        .then((value) => print("Item Updated"))
+        .catchError((error) => print("Failed to Update Item: $error"));
+  }
+
+  deleteItem(docId) {
+    CollectionReference items = FirebaseFirestore.instance.collection('items');
+
+    items.doc(docId).delete();
+  }
+
+  final Stream<QuerySnapshot> _itemsStream = FirebaseFirestore.instance
+      .collection('items')
+      .orderBy('date', descending: true)
+      .snapshots();
+
+  // .orderBy('age', descending: true).snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: NeverScrollableScrollPhysics(),
                   children:
                       snapshot.data!.docs.map((DocumentSnapshot document) {
-                        
                     Map<String, dynamic> data =
                         document.data()! as Map<String, dynamic>;
                     return ListTile(
@@ -110,6 +137,83 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: Text(
                         data['price'].toString(),
                         style: TextStyle(color: Colors.black),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Update Item Data"),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: width / 2,
+                                              child: TextField(
+                                                controller: _newitemController,
+                                                decoration: InputDecoration(
+                                                    hintText:
+                                                        "Enter New ItemName"),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: width / 2,
+                                              child: TextField(
+                                                controller: _newpriceController,
+                                                decoration: InputDecoration(
+                                                    hintText:
+                                                        "Enter New Price"),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      const   SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                            width: width / 2,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.deepOrange),
+                                                onPressed: () {
+                                                  updateItem(document.id);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  "Update Item",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ))),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                              // updateItem(document.id);
+                            },
+                            icon: Icon(Icons.edit),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                deleteItem(document.id);
+                              },
+                              icon: Icon(Icons.delete))
+                        ],
                       ),
                     );
                   }).toList(),
