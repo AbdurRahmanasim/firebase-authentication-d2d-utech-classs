@@ -1,4 +1,6 @@
+import 'package:authtesting/class20/mainScreen.dart';
 import 'package:authtesting/home.dart';
+import 'package:authtesting/imageSaver.dart';
 import 'package:authtesting/signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: MainScreen(),
     );
   }
 }
