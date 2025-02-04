@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -102,8 +105,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepOrange),
-                    onPressed: () {
-                      addItem();
+                    onPressed: () async {
+                      SharedPreferences _prefs =
+                          await SharedPreferences.getInstance();
+
+                      var getData =
+                          json.decode(_prefs.getString("userDetail") ?? "");
+                      print(getData.runtimeType);
+
+                      // addItem();
                     },
                     child: Text(
                       "Add Item",
@@ -181,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ],
                                         ),
-                                      const   SizedBox(
+                                        const SizedBox(
                                           height: 20,
                                         ),
                                         SizedBox(

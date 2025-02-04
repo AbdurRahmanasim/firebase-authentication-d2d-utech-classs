@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:authtesting/home.dart';
 import 'package:authtesting/signUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -21,16 +25,32 @@ class _LoginState extends State<Login> {
               email: _emailController.text.trim(),
               password: _passwwordController.text.trim())
           .then(
-        (value) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => HomeScreen(),
-          ));
-          print("SuccessFully Logged In");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('SuccessFully Logged In'),
-            ),
-          );
+        (value) async {
+          final _db = FirebaseFirestore.instance;
+          final snapshot = await _db.collection('users').get();
+          print(snapshot.docs.map((e) async {
+            if (e.data()['userEmail'] == _emailController.text.trim()) {
+              SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+              Map userData = {
+                "email": e.data()['userEmail'],
+                "name": e.data()['userName'],
+                "role": e.data()['role']
+              };
+              _prefs.setString("userDetail", json.encode(userData));
+
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ));
+
+              print("SuccessFully Logged In");
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('SuccessFully Logged In'),
+                ),
+              );
+            }
+          }));
         },
       );
     } on FirebaseAuthException catch (e) {

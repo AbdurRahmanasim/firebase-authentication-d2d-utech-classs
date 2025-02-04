@@ -1,4 +1,5 @@
 import 'package:authtesting/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +11,11 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwwordController = TextEditingController();
+
+  String dropdownVal = "Shop Owner";
 
   signupwithfirebase() async {
     try {
@@ -22,6 +26,19 @@ class _SignupState extends State<Signup> {
       )
           .then(
         (value) {
+          CollectionReference items =
+              FirebaseFirestore.instance.collection('users');
+
+          items
+              .add({
+                'userName': _nameController.text.trim(),
+                'userEmail': _emailController.text.trim(),
+                'role': dropdownVal,
+                'date': DateTime.now()
+              })
+              .then((value) => print("User Added"))
+              .catchError((error) => print("Failed to add User: $error"));
+
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => Login(),
           ));
@@ -64,6 +81,7 @@ class _SignupState extends State<Signup> {
               SizedBox(
                 width: width / 2,
                 child: TextField(
+                  controller: _nameController,
                   decoration: InputDecoration(hintText: "Enter UserName"),
                 ),
               ),
@@ -103,6 +121,27 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ],
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            width: width / 2,
+            child: DropdownButton(
+                value: dropdownVal,
+                items: [
+                  DropdownMenuItem(
+                    child: Text("Shop Owner"),
+                    value: "Shop Owner",
+                  ),
+                  DropdownMenuItem(
+                    child: Text("User"),
+                    value: "User",
+                  ),
+                ],
+                onChanged: (val) {
+                  setState(() {
+                    dropdownVal = val!;
+                  });
+                }),
           ),
           SizedBox(height: 10),
           SizedBox(
