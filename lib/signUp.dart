@@ -23,8 +23,7 @@ class _SignupState extends State<Signup> {
           .createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwwordController.text.trim(),
-      )
-          .then(
+      ).then(
         (value) {
           CollectionReference items =
               FirebaseFirestore.instance.collection('users');

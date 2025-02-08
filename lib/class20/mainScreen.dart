@@ -1,6 +1,7 @@
 import 'package:authtesting/class20/screens/analytics.dart';
 import 'package:authtesting/class20/screens/dashboard.dart';
 import 'package:authtesting/class20/screens/home.dart';
+import 'package:authtesting/class20/screens/profile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -13,7 +14,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<Widget> screens = const [Home(), Dashboard(), Analytics()];
+  final List<Widget> screens = const [
+    Home(),
+    Dashboard(),
+    Analytics(),
+    Profile()
+  ];
 
   int activeScreen = 0;
   // final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -25,6 +31,7 @@ class _MainScreenState extends State<MainScreen> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.lightGreenAccent,
         title: Text("MainScreen"),
       ),
       drawer: SidebarX(
@@ -112,11 +119,17 @@ class _MainScreenState extends State<MainScreen> {
               setState(() {});
             },
           ),
+          SidebarXItem(
+            icon: Icons.person,
+            label: 'Profile',
+            onTap: () {
+              activeScreen = 3;
+              setState(() {});
+            },
+          ),
         ],
       ),
-      body: 
-             
-      SafeArea(
+      body: SafeArea(
         child: screens[activeScreen],
       ),
     );

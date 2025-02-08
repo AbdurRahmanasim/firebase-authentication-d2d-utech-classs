@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:authtesting/class20/mainScreen.dart';
 import 'package:authtesting/home.dart';
 import 'package:authtesting/signUp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,7 +41,7 @@ class _LoginState extends State<Login> {
               _prefs.setString("userDetail", json.encode(userData));
 
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => HomeScreen(),
+                builder: (context) => MainScreen(),
               ));
 
               print("SuccessFully Logged In");
