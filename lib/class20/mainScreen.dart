@@ -39,9 +39,9 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   final Map permissions = {
-    "User" : [0,1,3],
-    "Shop Owner" : [0,1],
-    "Admin" :   [0,1,2,3],
+    "User": [0, 1, 3],
+    "Shop Owner": [0, 1],
+    "Admin": [0, 1, 2, 3],
   };
 
   int activeScreen = 0;
@@ -130,16 +130,17 @@ class _MainScreenState extends State<MainScreen> {
               );
             },
             items: [
-              for (int i = 0; i < screens.length; i++)
-                if (snapshot.data['role'] ==)
-                  SidebarXItem(
-                    icon: icons[i],
-                    label: screenNames[i],
-                    onTap: () {
-                      activeScreen = 0;
-                      setState(() {});
-                    },
-                  )
+              for (int i = 0;
+                  i < permissions[snapshot.data['role']].length;
+                  i++)
+                SidebarXItem(
+                  icon: icons[permissions[snapshot.data['role']][i]],
+                  label: screenNames[permissions[snapshot.data['role']][i]],
+                  onTap: () {
+                    activeScreen = permissions[snapshot.data['role']][i];
+                    setState(() {});
+                  },
+                )
               // SidebarXItem(
               //   icon: Icons.dashboard,
               //   label: 'Dashboard',
