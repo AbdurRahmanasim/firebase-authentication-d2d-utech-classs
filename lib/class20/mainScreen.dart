@@ -4,6 +4,7 @@ import 'package:authtesting/class20/screens/analytics.dart';
 import 'package:authtesting/class20/screens/dashboard.dart';
 import 'package:authtesting/class20/screens/home.dart';
 import 'package:authtesting/class20/screens/profile.dart';
+import 'package:authtesting/class20/screens/reviews.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,8 @@ class _MainScreenState extends State<MainScreen> {
     Home(),
     Dashboard(),
     Analytics(),
-    Profile()
+    Profile(),
+    Reviews()
   ];
 
   final List<IconData> icons = const [
@@ -29,19 +31,21 @@ class _MainScreenState extends State<MainScreen> {
     Icons.dashboard,
     Icons.analytics,
     Icons.person,
+    Icons.reviews
   ];
 
   final List<String> screenNames = const [
     "Home",
     "Dashboard",
     "Analytics",
-    "Profile"
+    "Profile",
+    "Reviews"
   ];
 
   final Map permissions = {
-    "User": [0, 1, 3],
-    "Shop Owner": [0, 1],
-    "Admin": [0, 1, 2, 3],
+    "User": [0, 1, 3, 4],
+    "Shop Owner": [0, 1, 4],
+    "Admin": [0, 1, 2, 3, 4],
   };
 
   int activeScreen = 0;
